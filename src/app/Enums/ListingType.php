@@ -11,9 +11,9 @@ use BenSampo\Enum\Enum;
  */
 final class ListingType extends Enum
 {
-    const LadderLeague  = 0;
-    const ChatRoom      = 1;
-    const Tournament    = 2;
-    const Casual        = 3;
-    const SocialSession = 4;
+    const LadderLeague  = 1;
+    const ChatRoom      = 2;
+    const Tournament    = 3;
+    const Casual        = 4;
+    const ClubOnlyEvent = 5;
 }

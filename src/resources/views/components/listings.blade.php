@@ -1,22 +1,20 @@
 
 <div id="listings">
-  <div>
-    <button id="add_listing_btn">Add Listing</button>
+  @auth
+  <div id="listings-btn-ctn">
+    <a href="/crlisting" class="">Add Listing</a>
   </div>
-  <div>
-    <ul id="listings_container">
-      @foreach ($listings as $listing)
-      <li>
-        <div class="listing-banner">
-          <?php
-            echo "<div class=\"listing-banner-" . $listing->type . "\">bogus</div>";
-          ?>
-        </div>
-        <div class="listing-info">
-          <div class="listing-title">{{ $listing->title }}</div>
-        </div>
-      </li>
-      @endforeach
-    <ul>
-  </div>
+  @endauth
+  <ul id="listings_container">
+    @foreach ($listings as $listing)
+    <li>
+      <?php
+        echo "<div class=\"listing-banner-" . $listing->type . "\"></div>";
+      ?>
+      <div class="listing-info">
+        <div class="listing-title">{{ $listing->title }}</div>
+      </div>
+    </li>
+    @endforeach
+  <ul>
 </div>

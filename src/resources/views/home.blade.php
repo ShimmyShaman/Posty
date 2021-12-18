@@ -14,7 +14,6 @@
             @endphp</span>
             <h4>Mornington Roslyn</h4>
           </div>
-          {{-- <a href="{{ route('logout') }}" class="dotted">Logout</a> --}}
           <form action="/logout" method="POST">
             @csrf
             <input type="submit" value="Logout">
