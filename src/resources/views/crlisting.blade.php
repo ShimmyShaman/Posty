@@ -2,6 +2,10 @@
 
 @component('layouts.master')
   <div id="content_container">
-    <h3>Hello Papi</h3>
+    <div class="text-center">
+      <h2>Create a Tennis Event</h2>
+    </div>
+    <form action="#">
+    </form>
   </div>
 @endcomponent
