@@ -17,9 +17,8 @@ class CreateListingsTable extends Migration
     {
         Schema::create('listings', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
+            $table->bigInteger('listing_id');
             $table->string('title');
-            $table->string('slug');
             $table->enum('type', ListingType::getValues());
             $table->timestamps();
         });

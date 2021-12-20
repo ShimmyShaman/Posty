@@ -33,6 +33,4 @@ class Tournament extends Migration
     {
         Schema::dropIfExists('tournaments');
     }
-
-    public function
 }
