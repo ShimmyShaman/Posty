@@ -9,11 +9,19 @@
     @foreach ($listings as $listing)
     <li>
       <?php
-        echo "<div class=\"listing-banner-" . $listing->type . "\"></div>";
+        $tourny_slug = $listing->item_slug();
+        echo "<a class=\"listlink\" href=\"/t/" . $tourny_slug . "\">";
       ?>
-      <div class="listing-info">
-        <div class="listing-title">{{ $listing->title }}</div>
-      </div>
+        <div>
+          <?php
+            echo "<div class=\"listing-banner-" . $listing->type . "\"></div>";
+          ?>
+          <h3>{{ $listing->title }}</h3>
+        </div>
+        {{-- <div class="listing-info">
+          {{-- <div class="listing-title"></div>
+        </div> --}}
+      </a>
     </li>
     @endforeach
   <ul>

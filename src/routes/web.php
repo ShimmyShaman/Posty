@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
 
+Route::get('/t/{tslug}', function($tslug) {
+    
+});
+//  [TournamentController::class, 'index']);
+
 // 
 Route::get('crlisting', [CreateListingController::class, 'index']);
 
