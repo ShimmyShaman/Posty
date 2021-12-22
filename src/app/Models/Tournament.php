@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Tournament extends Model
 {
@@ -41,5 +42,10 @@ class Tournament extends Model
     public function matches()
     {
         return $this->hasMany(related:ScheduledMatch::class);
+    }
+
+    public function participants()
+    {
+        return DB::table('tournament_user')->select('user_id')->where('tournament_id', '=', $this->id);
     }
 }

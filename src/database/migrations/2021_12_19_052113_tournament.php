@@ -19,7 +19,7 @@ class Tournament extends Migration
             $table->string('title');
             $table->string('slug');
             $table->enum('state', TournamentState::getValues());
-            $table->date('start-date');
+            $table->date('start_date');
             $table->timestamps();
         });
     }

@@ -31,7 +31,7 @@ class TournamentFactory extends Factory
             'title' => "MRLTC Club Champs",
             'slug' => 'mrltc_club_champs',
             'state' => TournamentState::Signup,
-            'start-date' => Date::createMidnightDate(2022, 3, 7),
+            'start_date' => Date::createMidnightDate(2022, 3, 7),
         ];
     }
 }
