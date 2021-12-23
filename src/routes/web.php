@@ -19,7 +19,7 @@ Route::get('/debug', function() {
     ]);
 });
 
-Route::post('/t/{tslug}', [TournamentController::class, 'signup']);
+Route::post('/t/signup', [TournamentController::class, 'signup']);
 
 Route::get('/dashboard', function () {
     return view('home');

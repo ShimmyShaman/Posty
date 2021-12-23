@@ -22,13 +22,12 @@
         };
       ?>
       @auth
-        <?php
-          echo "<form action=\" {!! action('TournamentController@signup'";
-          echo ", " . strval($tourny->id);
-          echo ", " . strval(Auth::user()->id);
-          echo ") !!}\" method=\"POST\">";
-        ?>
+      <form action="signup" method="POST">
         @csrf
+        <?php
+          echo "<input type=\"hidden\" id=\"tid\" name=\"tid\"";
+          echo " value=\"" . strval($tourny->id) . "\">"
+        ?>
         <input type="submit" value="Signup">
       </form>
       @else
