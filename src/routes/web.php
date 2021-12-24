@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/t/{tslug}', [TournamentController::class, 'show']);
+Route::get('/t/{tslug}', [TournamentController::class, 'showBySlug']);
+Route::get('/ti/{tid}', [TournamentController::class, 'showById']);
+Route::post('/t/{tslug}', [TournamentController::class, 'signup']);
 
 // 
 Route::get('crlisting', [CreateListingController::class, 'index']);
@@ -19,7 +21,6 @@ Route::get('/debug', function() {
     ]);
 });
 
-Route::post('/t/signup', [TournamentController::class, 'signup']);
 
 Route::get('/dashboard', function () {
     return view('home');

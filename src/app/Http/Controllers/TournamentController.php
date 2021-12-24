@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserTournamentStatus;
 use App\Http\Requests\TournamentRequest;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
@@ -11,20 +12,52 @@ use Illuminate\Support\Str;
 
 class TournamentController extends Controller
 {
+    protected function isUserSignedUp($tid)
+    {
+        if(!Auth::check()) {
+            return false;
+        }
+
+        // Check the user is not already signed up to the tournament
+        $already_signed_up = DB::select("select user_id from homestead.tournament_user where tournament_id="
+                                            . $tid . " and user_id="
+                                            . strval(Auth::user()->id) . " limit 1;");
+
+        return sizeof($already_signed_up) != 0;
+    }
+
     /*
      * Show the tournament with the slug id
      */
-    public function show($tslug)
+    public function showBySlug($tslug)
     {
         // $tourny = DB::table('tournaments')->select()->where('slug', '=', $tslug);
         $query = Tournament::where('slug', '=', $tslug);
         if($query->count() != 1)
             return view('errors.404');
+
+        $tourny = $query->first();
+        $already_signed_up = $this->isUserSignedUp($tourny->id);
+        
+        return view('tournament', [
+            'tourny' => $tourny,
+            'already_signed_up' => $already_signed_up,
+        ]);
+    }
+
+    /*
+     * Show the tournament with the tournament id
+     * Note: just redirects to the slug route
+     */
+    public function showById($tid)
+    {
+        // $tourny = DB::table('tournaments')->select()->where('slug', '=', $tslug);
+        $query = Tournament::where('id', '=', $tid);
+        if($query->count() != 1)
+            return view('errors.404');
         
         $tourny = $query->first();
-        return view('tournament', [
-            'tourny' => $tourny
-        ]);
+        return redirect('/t/' . strval($tourny->slug));
     }
 
     /*
@@ -35,30 +68,22 @@ class TournamentController extends Controller
         // Validate the input data
         $validated = $request->validated();
 
-        // Check the user is not already signed up to the tournament
-        $already_signed_up = DB::select("select user_id from homestead.tournament_user where tournament_id="
-                                            . $validated['tid'] . " and user_id="
-                                            . strval(Auth::user()->id) . " limit 1;");
-
-        if(sizeof($already_signed_up) != 0) {                
+        if($this->isUserSignedUp($validated['tid'])) {                
             return view('debug', [
-                'debug' => strval(sizeof($already_signed_up)),
+                'debug' => "user is already signed up",
             ]);
         }
 
-        TODO insert user into database and refresh tournament view
-
-        return view('debug', [
-            'debug' => strval(sizeof($already_signed_up)),
+        // Register the user for the tournament in the database
+        DB::table('tournament_user')->insert([
+            'tournament_id' => $validated['tid'],
+            'user_id' => Auth::user()->id,
+            'status' => UserTournamentStatus::SignedUp,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
-        // // $tourny = DB::table('tournaments')->select()->where('slug', '=', $tslug);
-        // $query = Tournament::where('slug', '=', $tslug);
-        // if($query->count() != 1)
-        //     return view('errors.404');
-        
-        // $tourny = $query->first();
-        // return view('tournament', [
-        //     'tourny' => $tourny
-        // ]);
+
+        // Return to the tournament
+        return $this->showById($validated['tid']);
     }
 }
