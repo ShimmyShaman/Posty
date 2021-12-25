@@ -28,8 +28,8 @@ class TournamentFactory extends Factory
     public function definition()
     {
         return [
-            'title' => "MRLTC Club Champs",
-            'slug' => 'mrltc_club_champs',
+            'title' => "Generic Tournament",
+            'slug' => 'generic_tourny',
             'state' => TournamentState::Signup,
             'start_date' => Date::createMidnightDate(2022, 3, 7),
         ];

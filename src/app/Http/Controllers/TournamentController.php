@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TournamentState;
 use App\Enums\UserTournamentStatus;
 use App\Http\Requests\TournamentRequest;
 use App\Models\Tournament;
@@ -61,13 +62,30 @@ class TournamentController extends Controller
     }
 
     /*
-     * Show the tournament with the slug id
+     * Handle the request to signup for the tournament by the user
      */
     public function signup(TournamentRequest $request)
     {
         // Validate the input data
         $validated = $request->validated();
 
+        // Get the tournament
+        $query = Tournament::where('id', '=', $validated['tid']);
+        if($query->count() != 1) {
+            return view('debug', [
+                'debug' => "Could not find tournament with id?"
+            ]);
+        }
+        $tourny = $query->first();
+
+        // Check the tournament is still in signup status
+        if($tourny->state != TournamentState::Signup) {
+            return view('debug', [
+                'debug' => "Tournament isn't taking signups"
+            ]);
+        }
+        
+        // Check the user is not already signed up
         if($this->isUserSignedUp($validated['tid'])) {                
             return view('debug', [
                 'debug' => "user is already signed up",
@@ -83,7 +101,7 @@ class TournamentController extends Controller
             'updated_at' => now(),
         ]);
 
-        // Return to the tournament
-        return $this->showById($validated['tid']);
+        // Return to the tournament display
+        return redirect('/t/' . strval($tourny->slug));
     }
 }
