@@ -13,5 +13,5 @@ final class TournamentState extends Enum
 {
     const Signup      = 1;
     const Ongoing     = 2;
-    const Complete    = 3;
+    const Completed   = 3;
 }

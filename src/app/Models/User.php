@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Tournament extends Model
+class User extends Authenticatable
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -16,6 +18,9 @@ class Tournament extends Model
      * @var string[]
      */
     protected $fillable = [
+        'name',
+        'email',
+        'password',
     ];
 
     /**
@@ -37,20 +42,8 @@ class Tournament extends Model
         'email_verified_at' => 'datetime',
     ];
 
-    protected $guarded = [];
-
-    public function matches()
+    public function listings()
     {
-        return $this->hasMany(related:ScheduledMatch::class);
-    }
-
-    public function participants()
-    {
-        return DB::table('tournament_user')->select('user_id')->where('tournament_id', '=', $this->id);
-    }
-
-    public function format()
-    {
-        
+        return $this->hasMany(related:Listing::class);
     }
 }

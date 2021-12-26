@@ -26,10 +26,13 @@ class DatabaseSeeder extends Seeder
     DB::delete('truncate table listings');
     DB::delete('truncate table users');
     DB::delete('truncate table tournament_user');
+    DB::delete('truncate table tournament_match');
+
+    // Users
+    User::factory(29)->create();
 
     // Tournament with Signup & 7 participants
     {
-      global $tourny;
       $tourny = Tournament::factory(1)->create([
           'title' => "MRLTC Club Champs",
           'slug' => 'mrltc_club_champs'
@@ -41,21 +44,21 @@ class DatabaseSeeder extends Seeder
           ]);
       });
 
-      User::factory(7)->create()->each(function($user) {
-        global $tourny;
+      for($i = 1; $i < 7 * 2; $i += 2) {
+        $user = DB::table('users')->select()->where('id', '=', $i)->first();
+
         DB::table('tournament_user')->insert(array(
             'user_id' => $user->id,
-            'tournament_id' => $tourny->id,
+            'tournament_id' => $tourny->first()->id,
             'status' => UserTournamentStatus::SignedUp,
             'created_at' => Date::now(),
             'updated_at' => Date::now(),
         ));
-      });
+      }
     }
     
     // Tournament: first round & 7 participants
     {
-      global $tourny;
       $tourny = Tournament::factory(1)->create([
           'title' => "Febuary Knockout",
           'slug' => 'feb_knockout',
@@ -68,27 +71,31 @@ class DatabaseSeeder extends Seeder
           ]);
       });
 
-      User::factory(7)->create()->each(function($user) {
-        global $tourny;
+      for($i = 2; $i < 14 * 2; $i += 2) {
+        $user = DB::table('users')->select()->where('id', '=', $i)->first();
+        
         DB::table('tournament_user')->insert(array(
             'user_id' => $user->id,
-            'tournament_id' => $tourny->id,
-            'status' => UserTournamentStatus::SignedUp,
+            'tournament_id' => $tourny->first()->id,
+            'status' => UserTournamentStatus::Allocated,
             'created_at' => Date::now(),
             'updated_at' => Date::now(),
         ));
-      });
+      }
 
       $participants = DB::select('select * from homestead.tournament_user where tournament_id=' .
-          strval($tourny->id) . ';');
+          strval($tourny->first()->id) . ';');
+
+      print("participants=" . strval(sizeof($participants)));
 
       for ($i = 0; $i + 2 <= sizeof($participants); $i += 2) {
           DB::table('tournament_match')->insert([
-              'tournament_id' => $tourny->id,
-              'player_one_id' => $participants[$i]->id,
-              'player_two_id' => $participants[$i + 1]->id,
+              'tournament_id' => $tourny->first()->id,
+              'player_one_id' => $participants[$i]->user_id,
+              'player_two_id' => $participants[$i + 1]->user_id,
           ]);
       }
+      print("whatup");
     }
   }
 }

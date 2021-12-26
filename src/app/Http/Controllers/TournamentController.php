@@ -38,12 +38,33 @@ class TournamentController extends Controller
             return view('errors.404');
 
         $tourny = $query->first();
-        $already_signed_up = $this->isUserSignedUp($tourny->id);
         
-        return view('tournament', [
-            'tourny' => $tourny,
-            'already_signed_up' => $already_signed_up,
-        ]);
+        switch($tourny->state) {
+            case TournamentState::Signup: {
+                $already_signed_up = $this->isUserSignedUp($tourny->id);
+
+                return view('tournament', [
+                    'tourny' => $tourny,
+                    'already_signed_up' => $already_signed_up,
+                ]);
+            } break;
+            case TournamentState::Ongoing: {
+                $already_signed_up = $this->isUserSignedUp($tourny->id);
+                $matches = DB::table('tournament_match')->select()->where('tournament_id',
+                  '=', $tourny->id);
+
+                return view('tournament', [
+                    'tourny' => $tourny,
+                    'already_signed_up' => $already_signed_up,
+                    'matches' => $matches,
+                ]);
+            } break;
+            case TournamentState::Completed: {
+                return view('tournament', [
+                    'tourny' => $tourny
+                ]);
+            } break;
+        }
     }
 
     /*

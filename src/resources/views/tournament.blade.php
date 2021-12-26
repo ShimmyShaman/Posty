@@ -7,37 +7,19 @@
         use App\Enums\TournamentState;
 
         echo "<h2>" . $tourny->title . "</h2>";
-        echo "<h2>Tournament Start Date:" . strval($tourny->start_date) . "</h2>";
+        echo "<h3>Start Date:" . strval($tourny->start_date) . "</h3>";
       ?>
 
       @switch($tourny->state)
         @case(TournamentState::Signup)
-          <?php
-            echo "<h2>Signed Up: " . strval($tourny->participants()->count()) . "</h2>";
-          ?>
-            
-          @auth
-          <?php
-            if($already_signed_up) {
-              echo "<h3>You are signed up!</h3>";
-            } else {
-              echo "<form action=\"\" method=\"POST\">";
-              echo "  <input type=\"hidden\" name=\"_token\"";
-              echo "     value=\"" . csrf_token() . "\">";
-              echo "  <input type=\"hidden\" name=\"tid\"";
-              echo "    value=\"" . strval($tourny->id) . "\">";
-              echo "  <input type=\"submit\" value=\"Signup\">";
-              echo "</form>";
-            }
-          ?>
-          @else
-            <h4>Login or register to sign up</h4>
-          @endauth
-            @break
+          @include('components.tournament.signup')
+          @break
         @case(TournamentState::Ongoing)
-        @case(TournamentState::Complete)
-          <h2>TODO</h2>
-            @break
+          @include('components.tournament.ongoing')
+          @break
+        @case(TournamentState::Completed)
+          @include('components.tournament.completed')
+          @break
         @default
           <h2>Error Unknown Tournament State</h2>
               
